@@ -1,7 +1,7 @@
 # Cpp-LifeSim-Game
 
-一个简单的C++人生模拟游戏
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+一个简单的C++人生模拟游戏
 
 ## 当前版本
 
