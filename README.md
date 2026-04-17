@@ -6,12 +6,12 @@
 
 ## 当前版本
 
-Alpha 0.13
+Alpha 0.15
 
 ## 游戏功能
 
 - 打工赚钱
-- 背包系统(未完成)
+- 背包系统
 - 彩票系统
 - 天数系统
 - 目标系统
@@ -34,8 +34,6 @@ g++ Main.cpp events.cpp -o game
 
 无需编译，直接安装：
 
-[百度网盘1]："https://pan.baidu.com/s/1OWB0x5Cvb3wVfEjYI3kqHQ?pwd=d0cz"
+[百度网盘1]："https://pan.baidu.com/s/1CxV9ei1qQ3yqvSZb5aIEsA?pwd=8xzj"
 
-[百度网盘2]："https://pan.baidu.com/s/1NY0v1hgVvxMWNHfautjD1w?pwd=a42p"
-
-[123云盘1]："https://www.123684.com/s/hd50Vv-nOvgd?pwd=pAYH#"
+[123云盘1]："https://1812699832.share.123pan.cn/123pan/hd50Vv-oRvgd?pwd=t49f#"
