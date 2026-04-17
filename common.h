@@ -7,32 +7,60 @@
 #include <unistd.h>
 #include <unordered_map>
 #include "random.h"
-/* ====== 变量区 ====== */
-inline int hp = 100;    //后面有注释的都是在开发中
-inline int maxHp = 100;   //一样
-inline bool dead = false;   //一样
-inline long long Money = 0;  //主角
-inline long long days = 0;
-inline long long targetMoney = 100000000;
-inline bool lotteryCd = false;
-/* ====== 函数声明区 ====== */
-int work();
-void randomFamily();
-bool checkGoal();
-void lottery();
+
+/* ====== 函数声明区 ======*/
+class Game;
+bool menu(Game& game);
 
 /* ====== 类声明区 ====== */
+
 class Backpack {
 private:
     std::unordered_map<std::string, int> packet;
+    void buyItem(int price,std::string name,Game& game);
+    void useItem(std::string name,Game& game);
 public:
     Backpack();
     void discard();
     void show();
-    void buyMenu();
-    void buyItem(int price,std::string name);
+    void buyMenu(Game& game);
+    void useMenu(Game& game);
 };
 
+
+
+class Game {
+private:
+    int hp = 100;
+    int maxHp = 100;
+    int minHp = 0;
+    bool dead = false;
+    long long Money = 0;  //因为比较特殊整个游戏都是围绕着他进行的所以就给他大写
+    long long days = 0;
+    long long targetMoney = 100000000;
+    bool lotteryCd = false;
+    void familyResult(std::string m,int z);
+public:
+    Backpack backpack;
+    int work();
+    void randomFamily();
+    bool checkGoal();
+    void lottery();
+    long long getMoney();
+    long long getDays();
+    bool getLotteryCd();
+    long long getTargetMoney();
+    int getHp();
+    bool getDead();
+    void die();
+    void earnMoney(long long amount);
+    void earnDays();
+    void earnHp(int amount);
+    bool spendMoney(long long amount);
+    void spendHp(int amount);
+    void nextDay();
+    
+};
 
 
 
