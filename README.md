@@ -55,7 +55,7 @@ g++ -std=c++11 Main.cpp events.cpp -o game -pthread -lcurl
 #### MacOS环境编译命令:
 
 ```bash
-clang++ -std=c++11 -o game Main.cpp events.cpp
+clang++ -std=c++11 -o game Main.cpp events.cpp -lcurl
 ```
 
 ## 运行命令：
