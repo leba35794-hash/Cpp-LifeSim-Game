@@ -1,10 +1,9 @@
 #include "common.h"
 
-
 int Game::work() {
     int a = random(200,500);
     std::cout << "工作中···" << std::endl;
-    sleep(random(2,4));
+    sleep(random(1,2));
     std::cout << "工作了一天您赚到了:" << a << "元人民币" << std::endl;
     if(player.getHunger() >= 40)
     {
@@ -197,6 +196,38 @@ void Game::nextDay() {
     lotteryCd = false;
     randomEvent();
 }
+void Bank::deposit(double amount,Player& player) {
+    if(amount <= 0) {
+        std::cout << "金额错误存款失败" << std::endl;
+        return;
+    }
+    if(player.getMoney() < amount) {
+        std::cout << "余额不足存款失败" << std::endl;
+        return;
+    }
+    player.spendMoney(amount);
+    balance += amount;
+    std::cout << "存款成功" << std::endl;
+}
+void Bank::withdraw(double amount,Player& player) {
+    if(amount <= 0) {
+        std::cout << "金额错误取款失败" << std::endl;
+        return;
+    }
+    if(balance < amount) {
+        std::cout << "余额不足取款失败" << std::endl;
+        return;
+    }
+    player.earnMoney(amount);
+    balance -= amount;
+    std::cout << "取款成功" << std::endl;
+}
+void Bank::checkBalance() {
+    std::cout << "当前余额为:" << balance << std::endl;
+}
+void Bank::dailyInterest() {
+    balance += balance * interestRate;
+}
 bool Game::sendVersion() {
     std::string cmd = "curl -s --max-time 5 \"" + SERVER_API + "/version.php\"";
     std::string versionStr;
@@ -292,6 +323,12 @@ void Player::earnHp(int amount) {
         hp += amount;
     }
 }
+double Bank::getBalance() {
+    return balance;
+}
+void Bank::setBalance(double amount) {
+    balance = amount;
+}
 void Player::spendHp(int amount,bool easterEgg) {
     if(hp - amount <= minHp)
     {
@@ -329,6 +366,7 @@ void Game::saveGame() {
     file << player.getHunger() << "\n";
     file << player.getThirst() << "\n";
     file << lotteryCd << "\n";
+    file << bank.getBalance() << "\n";
     for (const auto& item : backpack.getAllItems()) {
         file << item.first << " " << item.second << "\n";
     }
@@ -345,13 +383,15 @@ void Game::loadGame() {
     long long Money, days;
     int hp, hunger, thirst;
     bool lottery;
-    file >> Money >> days >> hp >> hunger >> thirst >> lottery;
+    double balance;
+    file >> Money >> days >> hp >> hunger >> thirst >> lottery >> balance;
     player.setMoney(Money);
     player.setDays(days);
     player.setHp(hp);
     player.setHunger(hunger);
     player.setThirst(thirst);
     lotteryCd = lottery;
+    bank.setBalance(balance);
     backpack.clear();
     std::string name;
     int count;
@@ -571,7 +611,7 @@ bool Backpack::useItem(std::string name,Game& game) {
     {
         if(name == "面包")
         {
-            std::cout << "你吃了几口面包感觉非常美味 饥饿值 + 60 面包 - 1" << std::endl;
+            std::cout << "美味 饥饿值 + 60 面包 - 1" << std::endl;
             packet[name] -= 1;
             game.player.earnHunger(60);
         }
@@ -599,19 +639,19 @@ bool Backpack::useItem(std::string name,Game& game) {
         }
         else if(name == "饮料")
         {
-            std::cout << "非常的好喝的饮料 口渴值 + 40 饮料 - 1" << std::endl;
+            std::cout << "非常的好喝 口渴值 + 40 饮料 - 1" << std::endl;
             packet[name] -= 1;
             game.player.earnThirst(40);
         }
         else if(name == "肉食")
         {
-            std::cout << "非常的好吃的肉食 饥饿值 + 50 肉食 - 1" << std::endl;
+            std::cout << "非常的好吃 饥饿值 + 50 肉食 - 1" << std::endl;
             packet[name] -= 1;
             game.player.earnHunger(50);
         }
         else
         {
-            std::cout << "非常的好吃的水果 饥饿值 + 25 水果 - 1" << std::endl;
+            std::cout << "非常的好吃 饥饿值 + 25 水果 - 1" << std::endl;
             packet[name] -= 1;
             game.player.earnHunger(25);
         }
@@ -710,6 +750,9 @@ bool menu(Game& game) {
                 << "8.保存存档" << std::endl
                 << "9.加载存档" << std::endl
                 << "10.检查更新" << std::endl
+                << "11.存款" << std::endl
+                << "12.取款" << std::endl
+                << "13.查询余额" << std::endl
                 << "0.退出" << std::endl;
         std::cin >> input;
         if(input == "1")
@@ -756,6 +799,7 @@ bool menu(Game& game) {
                 std::cout << "由于口渴值不足30所以扣除血量15" << std::endl;
                 game.player.spendHp(15);
             }
+            game.bank.dailyInterest();
             game.player.earnDays();
             game.nextDay();
             sleep(1);
@@ -791,6 +835,24 @@ bool menu(Game& game) {
             {
                 std::cout << "未发现新版本" << std::endl;
             }
+        }
+        else if(input == "11")
+        {
+            long amount = 0;
+            std::cout << "请输入存款金额" << std::endl;
+            std::cin >> amount;
+            game.bank.deposit(amount,game.player);
+        }
+        else if(input == "12")
+        {
+            long amount = 0;
+            std::cout << "请输入取款金额" << std::endl;
+            std::cin >> amount;
+            game.bank.withdraw(amount,game.player);
+        }
+        else if(input == "13")
+        {
+            game.bank.checkBalance();
         }
         else if(input == "0")
         {

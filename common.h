@@ -8,13 +8,11 @@
 #include <fstream>
 #include <unordered_map>
 #include "random.h"
-/*#define CPPHTTPLIB_DISABLE_IF2IP
-#define CPPHTTPLIB_DISABLE_SSL
-#include "httplib.h"*/
 #include <cstdio>
 
-/* ====== 函数声明区 ======*/
+/* ====== 函数/类声明区 ======*/
 class Game;
+class Player;
 bool menu(Game& game);
 
 /* ====== 版本常量 ====== */
@@ -81,13 +79,25 @@ public:
     bool spendMoney(long long amount);
     void spendHp(int amount,bool easterEgg = false);
 };
-
+class Bank {
+private:
+    double balance = 0.0;
+public:
+    const double interestRate = 0.00025;
+    void deposit(double amount,Player& player);
+    void withdraw(double amount,Player& player);
+    void checkBalance();
+    void dailyInterest();
+    double getBalance();
+    void setBalance(double amount);
+};
 class Game {
 private:
     bool lotteryCd = false;
     void familyResult(std::string m,int z);
     void randomEvent();
 public:
+    Bank bank;
     Player player;
     Backpack backpack;
     int work();
@@ -99,7 +109,5 @@ public:
     void loadGame();
     bool sendVersion();
 };
-
-
 
 #endif
