@@ -13,13 +13,13 @@ void Backpack::addItem(const std::string& name, int count) {
     packet[name] = count;
 }
 Backpack::Backpack() {
-    packet["手机"] = 1;
+    packet["手机"] = 0;
     packet["面包"] = 2;
     packet["矿泉水"] = 2;
-    packet["药品"] = 0;
+    packet["药品"] = 1;
     packet["饮料"] = 0;
     packet["肉食"] = 0;
-    packet["水果"] = 0;
+    packet["水果"] = 5;
 }
 
 void Backpack::discard() {
@@ -61,13 +61,13 @@ void Backpack::buyMenu(Player& player) {
     do {
         std::cout << "\n当前余额:" << player.getMoney() << "元人民币" << std::endl;
         std::cout << "请选择您要购买的物品:" << std::endl;
-        std::cout << "1.手机 1000元" << std::endl;
-        std::cout << "2.面包 5元" << std::endl;
-        std::cout << "3.矿泉水 1元" << std::endl;
-        std::cout << "4.药品 30元" << std::endl;
-        std::cout << "5.饮料 3元" << std::endl;
-        std::cout << "6.肉食 2元" << std::endl;
-        std::cout << "7.水果 10元" << std::endl;
+        std::cout << "1.手机 1299 元" << std::endl;
+        std::cout << "2.面包 6 元" << std::endl;
+        std::cout << "3.矿泉水 2 元" << std::endl;
+        std::cout << "4.药品 35 元" << std::endl;
+        std::cout << "5.饮料 4 元" << std::endl;
+        std::cout << "6.牛肉干 40 元" << std::endl;
+        std::cout << "7.水果 12 元" << std::endl;
         std::cout << "0.退出\n" << std::endl;
         std::cin >> input;
         if(input == "1")
@@ -120,6 +120,9 @@ void Backpack::buyItem(int price,std::string name,Player& player) {
         std::cout << "购买成功!" << std::endl;
         packet[name] += 1;
         player.spendMoney(price);
+        if(name == "手机") {
+            player.earnMood(2);
+        }
     }
     else
     {
@@ -145,7 +148,7 @@ bool Backpack::useItem(std::string name,Player& player) {
         }
         else if(name == "手机")
         {
-            std::cout << "你拿起手机打开游戏当打手带着老板千万撤离 hp - 5 Money + 200" << std::endl;
+            std::cout << "你拿起手机打开游戏当打手带着老板千万撤离 hp - 5 Money + 300 心情 - 1" << std::endl;
             player.spendHp(5,true);
             player.earnMoney(200);
             if(player.getDead())

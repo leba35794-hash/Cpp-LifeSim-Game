@@ -17,6 +17,9 @@ private:
     long long Money = 0;  //因为比较特殊整个游戏都是围绕着他进行的所以就给他大写
     long long days = 0;
     long long targetMoney = 100000000;
+    int mood = 50;
+    int maxMood = 100;
+    int minMood = 0;
 public:
     long long getMoney();
     long long getDays();
@@ -35,6 +38,12 @@ public:
     void setHunger(int amount);
     void setThirst(int amount);
     bool getDead();
+    
+    int getMood();
+    void earnMood(long long amount);
+    void spendMood(long long amount);
+    void setMood(long long amount);
+    
     void die(bool easterEgg);
     void earnMoney(long long amount);
     void earnDays();

@@ -1,5 +1,6 @@
 #include "../include/common.h"
 #include "../include/game.h"
+#include "../include/random.h"
 #include <unistd.h>
 bool menu(Game& game) {
     bool running = true;
@@ -16,6 +17,7 @@ bool menu(Game& game) {
                 << "当前余额:" << game.player.getMoney() << "元人民币" << std::endl
                 << "当前血量:" << game.player.getHp() << "/100" << std::endl
                 << "当前饥饿值:" << game.player.getHunger() << "/100 当前口渴值:" << game.player.getThirst() << "/100" << std::endl
+                << "当前心情:" << game.player.getMood() << "/100" << std::endl
                 << "当前天数第:" << game.player.getDays() << "天" << std::endl
                 << "1.打工(日结)" << std::endl
                 << "2.查看背包内物品" << std::endl
@@ -30,6 +32,7 @@ bool menu(Game& game) {
                 << "11.存款" << std::endl
                 << "12.取款" << std::endl
                 << "13.查询余额" << std::endl
+                << "14.去酒吧喝两杯" << std::endl
                 << "0.退出" << std::endl;
         std::cin >> input;
         if(input == "1")
@@ -56,6 +59,22 @@ bool menu(Game& game) {
         else if(input == "6")
         {
             std::cout << "第" << game.player.getDays() << "天结束了" << std::endl;
+            if(game.player.getMood() == 0 && randomBool()) {
+                std::cout << "你心情极差，由于在过马路的时候没注意到有车经过，导致被撞伤了由于你在过马路的时候闯了红灯导致你全责，";
+                if(game.player.getMoney() >= 15000) {
+                    std::cout << "扣除15000元人民币" << std::endl;
+                    game.player.spendMoney(15000);
+                } else {
+                    std::cout << "因为你承担不起15000元人民币的手术费，所以扣除血量70" << std::endl;
+                    game.player.spendHp(70);
+                }
+            } else if(game.player.getMood() <= 15 && randomBool()) {
+                std::cout << "因为你心情很不好，没注意看路，所以不小心摔了一跤，导致血量减少25" << std::endl;
+                game.player.spendHp(25);
+            } else if(game.player.getMood() <= 30 && randomBool()) {
+                std::cout << "你心情烦躁，不小心把钱包落在了公交车上损失500元" << std::endl;
+                game.player.spendMoney(500);
+            }
             if(game.player.getHunger() >= 30)
             {
                 std::cout << "饥饿值 - 30"<< std::endl;
@@ -73,11 +92,12 @@ bool menu(Game& game) {
             }
             else
             {
-                std::cout << "由于口渴值不足30所以扣除血量15" << std::endl;
-                game.player.spendHp(15);
+                std::cout << "由于口渴值不足30所以扣除血量50" << std::endl;
+                game.player.spendHp(50);
             }
             game.bank.dailyInterest();
             game.player.earnDays();
+            game.player.earnMood(3);
             game.nextDay();
             sleep(1);
         }
@@ -92,7 +112,6 @@ bool menu(Game& game) {
                 std::cout << "今日已经买过一次了，请明日再来" << std::endl;
 
             }
-
 
         }
         else if(input == "8")
@@ -130,6 +149,16 @@ bool menu(Game& game) {
         else if(input == "13")
         {
             game.bank.checkBalance();
+        }
+        else if(input == "14") {
+            if(game.player.getMoney() >= 200) {
+                game.player.spendMoney(200);
+                std::cout << "你在酒吧喝了两杯，心情好多了，花费200心情加5" << std::endl;
+                game.player.earnMood(5);
+            } else {
+                std::cout << "余额不足，连酒都喝不起了..." << std::endl;
+                game.player.spendMood(2);
+            }
         }
         else if(input == "0")
         {

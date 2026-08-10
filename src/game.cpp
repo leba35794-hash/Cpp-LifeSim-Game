@@ -3,35 +3,36 @@
 #include "../include/player.h"
 #include "../include/bank.h"
 #include "../include/backpack.h"
-#include "random.h"
+#include "../include/random.h"
 #include <fstream>
 #include <unistd.h>
 #include <cstdio>
 int Game::work() {
-    int a = random(200,500);
+    int a = random(400,600);
     std::cout << "工作中···" << std::endl;
     sleep(random(1,2));
     std::cout << "工作了一天您赚到了:" << a << "元人民币" << std::endl;
-    if(player.getHunger() >= 40)
+    if(player.getHunger() >= 35)
     {
-        std::cout << "饥饿值 - 40"<< std::endl;
-        player.spendHunger(40);
+        std::cout << "饥饿值 - 35"<< std::endl;
+        player.spendHunger(35);
     }
     else
     {
-        std::cout << "由于饥饿值不足40所以扣除血量15" << std::endl;
+        std::cout << "由于饥饿值不足35所以扣除血量15" << std::endl;
         player.spendHp(15);
     }
-    if(player.getThirst() >= 40)
+    if(player.getThirst() >= 35)
     {
-        std::cout << "口渴值 - 40"<< std::endl;
-        player.spendThirst(40);
+        std::cout << "口渴值 - 35"<< std::endl;
+        player.spendThirst(35);
     }
     else
     {
-        std::cout << "由于口渴值不足40所以扣除血量15" << std::endl;
-        player.spendHp(15);
+        std::cout << "由于口渴值不足35所以扣除血量50" << std::endl;
+        player.spendHp(50);
     }
+    player.spendMood(7);
     return a;
 }
 
@@ -122,6 +123,7 @@ void Game::randomEvent() {
     {
         std::cout << "你运气超好在路边免费抽奖抽中了10万元" << std::endl;
         player.earnMoney(100000);
+        player.earnMood(7);
     }
     else
     {
@@ -133,6 +135,7 @@ void Game::randomEvent() {
               case 5:
               case 6:
                   std::cout << "你走在马路上，捡到了100块钱" << std::endl;
+                  player.earnMood(1);
                   player.earnMoney(100);
                   break;
               case 7:
@@ -140,6 +143,7 @@ void Game::randomEvent() {
               case 9:
               case 10:
                   std::cout << "你一出门就踩到了一坨狗屎，你觉得倒霉透了" << std::endl;
+                  player.spendMood(1);
                   break;
               case 11:
               case 12:
@@ -148,6 +152,7 @@ void Game::randomEvent() {
               case 15:
               case 16:
                   std::cout << "你走在马路上，突然被一颗石子绊倒了";
+                  player.spendMood(1);
                   if(player.getMoney() == 0)
                   {
                       std::cout << "因为你没有钱买创可贴所以减少5的血量" << std::endl;
@@ -164,6 +169,7 @@ void Game::randomEvent() {
               case 19:
               case 20:
                   std::cout << "你刚一回到家，就发现自己的钱包不见了扣除500块" << std::endl;
+                  player.spendMood(3);
                   player.spendMoney(500);
                   break;
               default:
@@ -185,6 +191,7 @@ void Game::saveGame() {
     file << player.getThirst() << "\n";
     file << lotteryCd << "\n";
     file << bank.getBalance() << "\n";
+    file<< player.getMoney() << "\n";
     for (const auto& item : backpack.getAllItems()) {
         file << item.first << " " << item.second << "\n";
     }
@@ -199,10 +206,10 @@ void Game::loadGame() {
         return;
     }
     long long Money, days;
-    int hp, hunger, thirst;
+    int hp, hunger, thirst, mood;
     bool lottery;
     double balance;
-    file >> Money >> days >> hp >> hunger >> thirst >> lottery >> balance;
+    file >> Money >> days >> hp >> hunger >> thirst >> lottery >> balance >> mood;
     player.setMoney(Money);
     player.setDays(days);
     player.setHp(hp);
@@ -210,6 +217,7 @@ void Game::loadGame() {
     player.setThirst(thirst);
     lotteryCd = lottery;
     bank.setBalance(balance);
+    player.setMood(mood);
     backpack.clear();
     std::string name;
     int count;
@@ -222,36 +230,35 @@ void Game::loadGame() {
 
 void Game::lottery()
 {
-    int a = random(1,10);
-    long long b = 10000000;
+    int a = random(1,20);
+    long long b = 5000000;
     int input;
     std::string input2;
     bool mnl = true;
     bool mnl2 = true;
-    std::cout << "彩票奖金为:1000万元人民币" << std::endl;
+    std::cout << "彩票奖金为:500万元人民币" << std::endl;
     while (mnl2)
     {
         std::cout << "当前余额:" << player.getMoney() << "元人民币" << std::endl;
-        std::cout << "购买彩票需花费50元人民币" << std::endl;
+        std::cout << "购买彩票需花费500元人民币" << std::endl;
         std::cout << "是否购买(y/n):";
         std::cin >> input2;
-
         if(input2 == "y")
         {
-            if(player.getMoney() >= 50)
+            if(player.getMoney() >= 500)
             {
-                player.spendMoney(50);
+                player.spendMoney(500);
 
                 std::cout << "购买成功!" << std::endl;
-
+                player.earnMood(1);
                 lotteryCd = true;
 
                 while (mnl)
                 {
-                    std::cout << "请输入您选择的号码(1-10):";
+                    std::cout << "请输入您选择的号码(1-20):";
 
                     std::cin >> input;
-                    if(input >= 1 && input <= 10)
+                    if(input >= 1 && input <= 20)
                     {
                         mnl = false;
                         break;
@@ -268,6 +275,7 @@ void Game::lottery()
                 {
                     std::cout << "恭喜您!您中奖"<< std::endl;
                     player.earnMoney(b);
+                    player.earnMood(20);
                     mnl2 = false;
                     break;
                 }

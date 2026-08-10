@@ -10,7 +10,7 @@
 
 ## 当前版本
 
-- Alpha 0.20
+- Alpha 0.21
 
 ## 游戏功能
 
@@ -23,40 +23,46 @@
 - 联网检测版本
 - 银行系统
 
-## 怎么编译
+## 快速开始
 
-### 如未安装g++ curl请先安装:
+### 如未安装g++ curl git请先安装:
 
 #### Android(Termux)环境安装命令:
 
 ```bash
-pkg install g++ curl
+pkg install g++ curl git
 ```
 
 #### Linux环境安装命令:
 
 ```bash
-sudo apt install g++ curl
+sudo apt install g++ curl git
 ```
 
 #### MacOS环境安装命令:
 
 ```bash
-brew install curl
+brew install curl git
 xcode-select --install
 ```
+### 克隆仓库
+```bash
+git clone https://github.com/xmg0129/Cpp-LifeSim-Game.git
+cd Cpp-LifeSim-Game
+```
+
 ### 编译命令：
 
 #### Linux、Android(Termux)环境编译命令:
 
 ```bash
-g++ -std=c++11 Main.cpp events.cpp -o game -pthread -lcurl
+g++ -std=c++11 -Iinclude src/*.cpp -o game -pthread -lcurl
 ```
 
 #### MacOS环境编译命令:
 
 ```bash
-clang++ -std=c++11 -o game Main.cpp events.cpp -lcurl
+clang++ -std=c++11 -Iinclude src/*.cpp -o game -pthread -lcurl
 ```
 
 ## 运行命令：

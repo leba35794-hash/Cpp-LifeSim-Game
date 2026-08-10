@@ -137,3 +137,29 @@ void Player::earnThirst(long long amount) {
         thirst = maxThirst;
     }
 }
+int Player::getMood() {
+    return mood;
+}
+void Player::earnMood(long long amount) {
+    if(mood + amount <= maxMood)
+    {
+        mood += amount;
+    }
+    else
+    {
+        mood = maxMood;
+    }
+}
+void Player::spendMood(long long amount) {
+    if(mood - amount >= minMood)
+    {
+        mood -= amount;
+    }
+    else
+    {
+        mood = minMood;
+    }
+}
+void Player::setMood(long long amount) {
+    mood = amount;
+}
