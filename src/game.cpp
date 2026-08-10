@@ -191,7 +191,7 @@ void Game::saveGame() {
     file << player.getThirst() << "\n";
     file << lotteryCd << "\n";
     file << bank.getBalance() << "\n";
-    file<< player.getMoney() << "\n";
+    file<< player.getMood() << "\n";
     for (const auto& item : backpack.getAllItems()) {
         file << item.first << " " << item.second << "\n";
     }
